@@ -80,7 +80,7 @@ email: ""
 
 I am a Postdoctoral Fellow in the Marketing Group at University of Chicago Booth School of Business.
 
-My current research leverages text as data, utilizing tools from Machine Learning and Natural Language Processing, integrating their outputs into quantitative models to understand:
+My current research combines structural econometrics with text as data, utilizing tools from Machine Learning and Natural Language Processing, to study:
 
 - The impact of social media content on consumer demand for new products
 - The interaction between offline advertising and online word of mouth
