@@ -4,9 +4,7 @@ external_link: ""
 image:
   focal_point: Smart
 links:
-- icon: browser
-  icon_pack: far
-  name: Carpentries Homepage
+- name: Programming Practices Homepage
   url: https://pp4rs.github.io
 - icon: github
   icon_pack: fab
@@ -17,7 +15,7 @@ slides:
 summary: Aims to improve programming and data practices of early careeer researchers. Targeted at graduate students & researchers in business and economics.
 tags:
 - pp4rs
-title: Programming Practices for Research in Economics
+title: Programming Practices for Research Students
 url_code: ""
 url_pdf: ""
 url_slides: ""

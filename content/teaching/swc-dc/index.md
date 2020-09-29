@@ -4,9 +4,7 @@ external_link: ""
 image:
   focal_point: Smart
 links:
-- icon: browser
-  icon_pack: far
-  name: Carpentries Homepage
+- name: Carpentries Homepage
   url: https://carpentries.org/
 slides:
 summary: Teaches foundational coding, and data science skills to researchers Targeted at graduate students & researchers.
