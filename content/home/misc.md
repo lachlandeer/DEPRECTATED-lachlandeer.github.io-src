@@ -39,6 +39,14 @@ subtitle = ""
 [design]
   # Choose how many columns the section has. Valid values: 1 or 2.
   columns = "2"
+  
+  # Toggle between the various page layout types.
+  #   1 = List
+  #   2 = Compact
+  #   3 = Card
+  #   5 = Showcase
+  view = 5
+
 
 [design.background]
   # Apply a background color, gradient, or image.
@@ -74,56 +82,3 @@ subtitle = ""
  # CSS class.
  css_class = ""
 +++
-
-## Installation Guide for Software and Packages
-
-While teaching programming skills I have assembled a set of instructions for setting up a computing environment that I find useful for economics / marketing research.
-
-* [Detailed Installation Guide for Ubuntu / Debian Systems](https://lachlandeer.github,io/installation-guide)
-    * I use this when setting up a new machine for myself. It's quite brief on details. 
-* [Basic Guide for Windows, Mac and Ubuntu](https://pp4rs.github.io/installation-guide)
-    * I use this when teaching. There should be a lot of details here.
-
-## Reproducible Research Workflows
-
-The Snakemake workflow management system helps to create reproducible and scalable data analyses. 
-It was originally designed for Bioinformatics workflows, but I have found it suits research in empirical economics and marketing just as well.
-Official documentation for Snakemake is [here](https://snakemake.readthedocs.io/en/stable/). 
-Below are some templates that I use for my research and an extended tutorial.
-
-* [Snakemake template for `R`](https://github.com/lachlandeer/snakemake-econ-r)
-    * *Status: Under development*
-    * Coauthored with [Julian Langer](https://julianlanger.github.io) (U Zurich)
-    
-<!---
-* [Snakemake template for `Python`](https://github.com/lachlandeer/snakemake-python)
-* [An extended Snakemake tutorial](https://github.com/lachlandeer/snakemake-economics)
---->
-
-Some of my older projects use `Waf` to implement a reproducible workflow. `Waf` was introduced to me by [Hans-Martin von Gaudecker](http://wiwi.uni-bonn.de/gaudecker/index.html). 
-He provides great templates [here](https://github.com/OpenSourceEconomics/econ-project-templates) in multiple programming languages along with an [extended tutorial](https://econ-project-templates.readthedocs.io/en/latest/index.html). 
-It's a good alternative, but I think the Waf learning curve is a tad steeper.
-
-
-## Markdown templates
-
-Most of my written work is in markdown. Here are some templates I have used now and in the past. They may be a little outdated.
-
-* [Article templates with `bookdown` and `rticles`](https://github.com/lachlandeer/bookdown_rticles)
-* [Article template in `markdown`](https://github.com/lachlandeer/markdown-article-template)
-* [Beamer slide template](https://github.com/lachlandeer/beamer-LagonBleu) with `markdown`
-* [CV template](https://github.com/lachlandeer/lachlandeer-cv) with `Rmarkdown`
-* [HTML slide template](https://github.com/lachlandeer/xaringan-template) with `Rmarkdown` and `xaringan`
-
-<!---
-* [UZH Thesis templates](https://github.com/lachlandeer/thesisdown-uzh) with `Rmarkdown`
-* [UZH Letter template](https://github.com/lachlandeer/uzh-letter) with `Rmarkdown`
---->
-
-<!---
-## Other tutorials
-Some other tutorials I have put together over the years:
-
-* [Data Wrangling with Pandas: A Guide for Economists](https://github.com/lachlandeer/pandas-economics)
-* [Estimating Econometric Models with GMM in R](https://github.com/lachlandeer/gmm-r)
---->
