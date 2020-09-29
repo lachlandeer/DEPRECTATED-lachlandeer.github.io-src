@@ -93,7 +93,7 @@ phone = ""
 
 # Address
 # For country_code, use the 2-letter ISO code (see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 )
-address = street = "5807 S Woodlawn Ave", city = "Chicago", region = "IL", postcode = "60637", country = "United States", country_code = "US"}
+address = {street = "5807 S Woodlawn Ave", city = "Chicago", region = "IL", postcode = "60637", country = "United States", country_code = "US"}
 
 # Geographic coordinates
 # To get your coordinates, right-click on Google Maps and choose "What's here?". The coords will show up at the bottom.
@@ -104,7 +104,7 @@ directions = ""
 
 # Office hours
 # A list of your office hours. To remove, set to an empty list `[]`.
-office_hours = ["By email appointment""]
+office_hours = ["By email appointment"]
 
 # Enter an optional link for booking appointments (e.g. calendly.com).
 appointment_url = ""
