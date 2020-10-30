@@ -1,3 +1,5 @@
 .Rproj.user/
 public/*
 resources/*
+.Rhistory
+*.Rproj
