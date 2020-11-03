@@ -1,0 +1,279 @@
+---
+title: Reporting Quantile Regression Estimates Across Multiple Quantiles in the Tidyverse
+subtitle:
+summary: How to estimate and report many quantile regressions using functions from the `tidyverse`
+authors:
+- admin
+date: "2020-11-02T00:00:00Z"
+lastMod: "2020-11-02T00:00:00Z"
+featured: false
+draft: false
+categories: ["R"]
+tags: ["R", "purrr", "regression", "tidyverse", "quantreg"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, 
+                      warning=FALSE, 
+                      message=FALSE)
+```
+
+## Overview
+
+In this post I want to show how to estimate a quantile regression model across multiple quantiles and report the results in tabular and graphical formats. 
+I've found it hard to find a single reference on how to do this in the past, so I am hoping to fill the void somewhat.
+Throughout, I am going to try and stick to packages that are either inside the `tidyverse` or integrate well with their philosophy.
+
+Here's the overview of what I am going to do in this post:
+
+1. Read in data from the Medical Expenditure Panel Survey provided in Cameron & Trivedi's book "Microeconometrics Using Stata"
+2. Run an OLS regression
+3. Run a single quantile regression
+4. Run multiple quantile regressions using `purrr`'s `map()` function
+5. Present the results in a:
+    * Regression table
+    * Coefficient plot
+
+Let's get started...
+
+## Libraries
+
+First thing we need is to load the necessary packages:
+
+```{r}
+library(haven)
+library(dplyr)
+library(tidyr)
+library(skimr)
+library(ggplot2)
+library(quantreg)
+library(broom)
+library(purrr)
+```
+
+## Load Data
+
+Next, we are going to load data some data.
+For this illustration we're utilizing some data from Cameron & Trivedi's "Microeconometrics Using Stata" textbook (see [here](http://cameron.econ.ucdavis.edu/musbook/mus.html)).
+This book was definitely a "go-to" for me back in the days where Stata was my default statistical programming language.
+
+The data is an excerpt from the Medical Expenditure Panel Survey (MEPS) that's been cleaned up a tad.
+We are going to download it directly from the Cameron's website.
+The data is in Stata format, so we'll load it using `haven`'s `read_dta()` function that can read Stata datasets. 
+Once it's loaded, we'll look at the structure of the dataset.
+`glimpse()` will show use the column names, format and some example rows.
+
+
+```{r load-data}
+meps_url <- "http://cameron.econ.ucdavis.edu/musbook/mus03data.dta"
+meps <- read_dta(meps_url)
+# look at the structure of data set
+glimpse(meps)
+```
+
+We can use `skimr`'s `skim()` function to view the summary stats and distribution of variables we will use in a regression model.
+I've dropped data that have missing values for `ltotexp` (log total expenditure).
+
+```{r}
+meps %>%
+  drop_na(ltotexp) %>%
+  select(ltotexp, suppins, totchr, age, female, white) %>%
+  skim()
+```
+
+## An OLS Regression Model
+
+In what follows we are going to work with data from MEPS where there are no missing values for log total expenditure. 
+Although the missing datapoints would be dropped when we estimate a regression model, I like to filter them out myself.
+If for no other reason, it's quite explicit.
+
+```{r}
+meps_filtered <- meps %>%
+  drop_na(ltotexp)
+```
+
+The regression model we want to estimate is:
+
+$$
+ltotexp_{i} = \beta_0 + \beta_1 suppins_{i} + \beta_2 totchr_{i} + \beta_3 age_{i} + \beta_4 female_{i} + \beta_5 white_{i} + \varepsilon_{i}
+$$
+Let's estimate that via OLS and look at the regression results:
+
+```{r}
+ols_res <- lm(ltotexp ~ suppins + totchr + age + female + white, data= meps_filtered)
+
+summary(ols_res)
+```
+
+We are going to use these as a benchmark to see how our quantile regression estimates vary relative to them.
+
+## Estimating One Quantile Regression
+
+Quantile regression is going to allow our model to have different average effects along the distribution of the dependent variable (in our case `ltotexp`).
+`quantreg`'s `rq()` function will allow us to estimate these regressions.
+If we are interested in the model around one quantile, for example around the median, we can estimate the model as follows: 
+
+```{r}
+quant_reg <- rq(ltotexp ~ suppins + totchr + age + female + white, 
+                tau = 0.5,
+                data= meps_filtered
+                )
+
+summary(quant_reg)
+```
+
+## Estimating Multiple Quantiles
+
+Typically we aren't only interested in estimating a quantile regression around one point in the distribution, but instead across multiple quantiles.
+To do this we can create a vector with the quantiles we are interested in and then estimate the model for each quantile.
+We are going to do this using `purrr`'s `map()` function:
+
+```{r}
+quants <- c(0.1, 0.25, 0.5, 0.75, 0.9)
+
+qr_res <- map(quants, ~rq(ltotexp ~ suppins + totchr + age + female + white, 
+                  tau = .x, 
+                  data=meps_filtered)
+            )
+```
+
+The above snippet says that for each element of the vector `quants` estimate the quantile regression using each element as the `tau` value (i.e. quantile of interest).^[Note that if you read `quantreg`'s manual and vignettes one can estimate multiple quantile regressions by passing a vector to the `tau` argument. I've found working with the output using the `map()` method easier.]
+The output of the map command is a list:
+
+```{r}
+typeof(qr_res)
+```
+
+There's 5 elements to of the list:
+
+```{r}
+length(qr_res)
+```
+
+Each element is the output of a quantile regression, differing by which quantile they are estimated for:
+
+```{r}
+summary(qr_res[[1]])
+```
+
+```{r}
+summary(qr_res[[3]])
+```
+
+
+## Summarising Regression Output
+
+Now that we have the results in hand we want to present them in a readable way.
+We are going to look at two ways - a regression table and a coefficient plot.
+
+### The Regression Table
+
+We are going to use `stargazer` to produce the estimates table.^[
+The `modelsummary` package is currently my preferred method, but I had difficulty getting it to work with quantile regression output.
+]
+We want the OLS results alongside the quantile regression estimates so we pass these across as the first two arguments (stargazer will unpack the list of models inside `qr_res` for us).
+We must specify how we want the standard errors of the quantile regression to be computed (or accept a default), we've gone with bootstrapped standard errors.
+The rest of the lines arguments tidy up the table a little.
+`type = 'text'` prints the resulting table as plain text, switch to 'latex' if you want to put the table in a LaTex or Markdown document.
+
+```{r}
+stargazer::stargazer(ols_res, qr_res, 
+                     #rq.se = "boot",
+                     column.labels = c("OLS", paste("tau = ", quants)),
+                     covariate.labels = c("Supplementary Insurance == 1",
+                                          "# Chronic Health Conditions",
+                                          "Age",
+                                          "Female",
+                                          "White"),
+                     dep.var.labels = "log(Total Exp) | Total Exp > 0",
+                     omit = c("Constant"),
+                     model.numbers = TRUE,
+                     model.names =  FALSE,
+                     keep.stat = c('n'),
+                     type ='text')
+```
+
+## Coefficient Plots
+
+We now want to produce a coefficient plot.
+The plot should have one subplot for each variable of interest (we'll do all), and each subplot has the point estimate and confidence interval of the regression coefficient for each quantile that we were interested in. 
+We'll also connect the point estimates with a line.
+
+First, we will need the coefficients and confidence intervals in a format that's easier to work with than the list format.
+To do this we will `tidy` the regression output.
+For one set of estimates we would do this as follows:
+
+```{r}
+tidy(qr_res[[3]], se = "boot")
+```
+
+And we see that it produces a data frame woth the coefficient names along with the estimates and the quantile (`tau`).
+To do this for each of the five elements of the list, we will use `map()` to apply the `tidy()` function to each element of the list `qr_res`.
+`.x` tells `R` where to use the first argument of map function, which for us is the first argument of the `tidy()` command.
+This produces a list of dataframes, each formatted like the one above.
+To *unlist* these into one larger dataframe, use `bind_rows()` to flatten the list of dataframes.
+
+```{r}
+qr_tidy <- map(qr_res, ~tidy(.x, se = "boot")) %>%
+            bind_rows()
+```
+
+The result looks like:
+
+```{r}
+head(qr_tidy, 10) # print first 10 rows
+```
+
+We also tidy up the OLS estimation results so they have the same format.
+This is because we want to plot the OLS estimate too.
+Since there is only one set of estimates, we don't need to worry about binding multiple sets of estimates together.
+
+```{r}
+ols_tidy <- tidy(ols_res)
+```
+
+```{r}
+
+qr_tidy %>%
+  ggplot(aes(x = tau,
+             y = estimate
+             )
+         ) + # the data we want to plot - in our case the tidied quantile regression output
+  geom_point(color = "#27408b", 
+             size = 3
+             ) + # plots the coefficient estimates
+  geom_line(color="#27408b", 
+            size = 1
+            ) + # adds a line connecting the coefficient estimates
+  geom_errorbar(aes(
+    ymin = conf.low,
+    ymax = conf.high
+      ), 
+    width = 0.05,
+    size  = 0.3,
+    position = position_dodge(.9)
+    ) + # adds the confidence intervals as error bars
+  geom_hline(data = ols_tidy, 
+             aes(yintercept = estimate), 
+             color = "red"
+             ) + # add OLS estimate - note it is from another data set which is totally OK
+  facet_wrap(~term, 
+             scales="free", 
+             ncol=2
+             ) + # one plot per explanatory variable, subplots over 2 columns
+  theme_bw()
+```
+
+Now one could further format the plot by improving axes and subplot names - but we'll leave this as it is.
+
+## Final Thoughts
+
+The aim of this post was to be able to estimate quantile regressions across multiple quantiles and report the output in a presentable way.
+I've tackled this (mostly) using packages from within the `tidyverse`.
+Alternatively, one could stick within the a set of helper functions provided by `quantreg` (see the vignette [here](https://cran.r-project.org/web/packages/quantreg/vignettes/rq.pdf))- but I've found what comes out harder to customize as I wanted.
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
