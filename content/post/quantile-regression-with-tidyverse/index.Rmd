@@ -4,8 +4,8 @@ subtitle:
 summary: How to estimate and report many quantile regressions using functions from the `tidyverse`
 authors:
 - admin
-date: "2020-11-02T00:00:00Z"
-lastMod: "2020-11-02T00:00:00Z"
+date: "2020-11-20T00:00:00Z"
+lastMod: "2020-11-20T00:00:00Z"
 featured: false
 draft: false
 categories: ["R"]
@@ -20,8 +20,8 @@ knitr::opts_chunk$set(collapse = TRUE,
 
 ## Overview
 
-In this post I want to show how to estimate a quantile regression model across multiple quantiles and report the results in tabular and graphical formats. 
-I've found it hard to find a single reference on how to do this in the past, so I am hoping to fill the void somewhat.
+In this post I want to demonstrate how to estimate a quantile regression model across multiple quantiles and report the results in a regression table and a coefficent plot. 
+I've found it hard to find a single reference on how to do this in the past, so I am hoping to fill the void.
 Throughout, I am going to try and stick to packages that are either inside the `tidyverse` or integrate well with their philosophy.
 
 Here's the overview of what I am going to do in this post:
@@ -38,7 +38,7 @@ Let's get started...
 
 ## Libraries
 
-First thing we need is to load the necessary packages:
+The first thing we need is to load the necessary packages:
 
 ```{r}
 library(haven)
@@ -58,7 +58,7 @@ For this illustration we're utilizing some data from Cameron & Trivedi's "Microe
 This book was definitely a "go-to" for me back in the days where Stata was my default statistical programming language.
 
 The data is an excerpt from the Medical Expenditure Panel Survey (MEPS) that's been cleaned up a tad.
-We are going to download it directly from the Cameron's website.
+We are going to download it directly from Cameron's website.
 The data is in Stata format, so we'll load it using `haven`'s `read_dta()` function that can read Stata datasets. 
 Once it's loaded, we'll look at the structure of the dataset.
 `glimpse()` will show use the column names, format and some example rows.
@@ -125,7 +125,7 @@ summary(quant_reg)
 ## Estimating Multiple Quantiles
 
 Typically we aren't only interested in estimating a quantile regression around one point in the distribution, but instead across multiple quantiles.
-To do this we can create a vector with the quantiles we are interested in and then estimate the model for each quantile.
+We can to this by creating a vector with the quantiles we are interested in and then estimate the model for each quantile.
 We are going to do this using `purrr`'s `map()` function:
 
 ```{r}
@@ -150,11 +150,13 @@ There's 5 elements to of the list:
 length(qr_res)
 ```
 
-Each element is the output of a quantile regression, differing by which quantile they are estimated for:
+Each element is the output of a quantile regression, one for each of the quantiles we wanted. For example:
 
 ```{r}
 summary(qr_res[[1]])
 ```
+
+And:
 
 ```{r}
 summary(qr_res[[3]])
@@ -178,7 +180,7 @@ The rest of the lines arguments tidy up the table a little.
 
 ```{r}
 stargazer::stargazer(ols_res, qr_res, 
-                     #rq.se = "boot",
+                     rq.se = "boot",
                      column.labels = c("OLS", paste("tau = ", quants)),
                      covariate.labels = c("Supplementary Insurance == 1",
                                           "# Chronic Health Conditions",
@@ -196,7 +198,7 @@ stargazer::stargazer(ols_res, qr_res,
 ## Coefficient Plots
 
 We now want to produce a coefficient plot.
-The plot should have one subplot for each variable of interest (we'll do all), and each subplot has the point estimate and confidence interval of the regression coefficient for each quantile that we were interested in. 
+The plot should have a subplot for each variable of interest (we'll do all), and each subplot has the point estimate and confidence interval of the regression coefficient for each quantile that we were interested in. 
 We'll also connect the point estimates with a line.
 
 First, we will need the coefficients and confidence intervals in a format that's easier to work with than the list format.
@@ -209,7 +211,7 @@ tidy(qr_res[[3]], se = "boot")
 
 And we see that it produces a data frame woth the coefficient names along with the estimates and the quantile (`tau`).
 To do this for each of the five elements of the list, we will use `map()` to apply the `tidy()` function to each element of the list `qr_res`.
-`.x` tells `R` where to use the first argument of map function, which for us is the first argument of the `tidy()` command.
+`.x` tells `R` where to use the first argument of map function (i.e. `qr_res` here), which for us is the first argument of the `tidy()` command.
 This produces a list of dataframes, each formatted like the one above.
 To *unlist* these into one larger dataframe, use `bind_rows()` to flatten the list of dataframes.
 

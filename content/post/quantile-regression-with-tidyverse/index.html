@@ -4,8 +4,8 @@ subtitle:
 summary: How to estimate and report many quantile regressions using functions from the `tidyverse`
 authors:
 - admin
-date: "2020-11-02T00:00:00Z"
-lastMod: "2020-11-02T00:00:00Z"
+date: "2020-11-20T00:00:00Z"
+lastMod: "2020-11-20T00:00:00Z"
 featured: false
 draft: false
 categories: ["R"]
@@ -16,8 +16,8 @@ tags: ["R", "purrr", "regression", "tidyverse", "quantreg"]
 
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<p>In this post I want to show how to estimate a quantile regression model across multiple quantiles and report the results in tabular and graphical formats.
-I’ve found it hard to find a single reference on how to do this in the past, so I am hoping to fill the void somewhat.
+<p>In this post I want to demonstrate how to estimate a quantile regression model across multiple quantiles and report the results in a regression table and a coefficent plot.
+I’ve found it hard to find a single reference on how to do this in the past, so I am hoping to fill the void.
 Throughout, I am going to try and stick to packages that are either inside the <code>tidyverse</code> or integrate well with their philosophy.</p>
 <p>Here’s the overview of what I am going to do in this post:</p>
 <ol style="list-style-type: decimal">
@@ -35,7 +35,7 @@ Throughout, I am going to try and stick to packages that are either inside the <
 </div>
 <div id="libraries" class="section level2">
 <h2>Libraries</h2>
-<p>First thing we need is to load the necessary packages:</p>
+<p>The first thing we need is to load the necessary packages:</p>
 <pre class="r"><code>library(haven)
 library(dplyr)
 library(tidyr)
@@ -51,7 +51,7 @@ library(purrr)</code></pre>
 For this illustration we’re utilizing some data from Cameron &amp; Trivedi’s “Microeconometrics Using Stata” textbook (see <a href="http://cameron.econ.ucdavis.edu/musbook/mus.html">here</a>).
 This book was definitely a “go-to” for me back in the days where Stata was my default statistical programming language.</p>
 <p>The data is an excerpt from the Medical Expenditure Panel Survey (MEPS) that’s been cleaned up a tad.
-We are going to download it directly from the Cameron’s website.
+We are going to download it directly from Cameron’s website.
 The data is in Stata format, so we’ll load it using <code>haven</code>’s <code>read_dta()</code> function that can read Stata datasets.
 Once it’s loaded, we’ll look at the structure of the dataset.
 <code>glimpse()</code> will show use the column names, format and some example rows.</p>
@@ -305,7 +305,7 @@ summary(quant_reg)
 <div id="estimating-multiple-quantiles" class="section level2">
 <h2>Estimating Multiple Quantiles</h2>
 <p>Typically we aren’t only interested in estimating a quantile regression around one point in the distribution, but instead across multiple quantiles.
-To do this we can create a vector with the quantiles we are interested in and then estimate the model for each quantile.
+We can to this by creating a vector with the quantiles we are interested in and then estimate the model for each quantile.
 We are going to do this using <code>purrr</code>’s <code>map()</code> function:</p>
 <pre class="r"><code>quants &lt;- c(0.1, 0.25, 0.5, 0.75, 0.9)
 
@@ -320,7 +320,7 @@ The output of the map command is a list:</p>
 <p>There’s 5 elements to of the list:</p>
 <pre class="r"><code>length(qr_res)
 ## [1] 5</code></pre>
-<p>Each element is the output of a quantile regression, differing by which quantile they are estimated for:</p>
+<p>Each element is the output of a quantile regression, one for each of the quantiles we wanted. For example:</p>
 <pre class="r"><code>summary(qr_res[[1]])
 ## 
 ## Call: rq(formula = ltotexp ~ suppins + totchr + age + female + white, 
@@ -336,6 +336,7 @@ The output of the map command is a list:</p>
 ## age          0.01927  0.00601    3.20732  0.00135
 ## female      -0.01273  0.07579   -0.16794  0.86664
 ## white        0.07344  0.19533    0.37597  0.70697</code></pre>
+<p>And:</p>
 <pre class="r"><code>summary(qr_res[[3]])
 ## 
 ## Call: rq(formula = ltotexp ~ suppins + totchr + age + female + white, 
@@ -364,7 +365,7 @@ We must specify how we want the standard errors of the quantile regression to be
 The rest of the lines arguments tidy up the table a little.
 <code>type = 'text'</code> prints the resulting table as plain text, switch to ‘latex’ if you want to put the table in a LaTex or Markdown document.</p>
 <pre class="r"><code>stargazer::stargazer(ols_res, qr_res, 
-                     #rq.se = &quot;boot&quot;,
+                     rq.se = &quot;boot&quot;,
                      column.labels = c(&quot;OLS&quot;, paste(&quot;tau = &quot;, quants)),
                      covariate.labels = c(&quot;Supplementary Insurance == 1&quot;,
                                           &quot;# Chronic Health Conditions&quot;,
@@ -386,19 +387,19 @@ The rest of the lines arguments tidy up the table a little.
 ##                                (1)       (2)       (3)        (4)       (5)        (6)   
 ## -----------------------------------------------------------------------------------------
 ## Supplementary Insurance == 1 0.257*** 0.396***   0.386***  0.277***   0.149**    -0.014  
-##                              (0.046)   (0.079)   (0.060)    (0.053)   (0.062)    (0.086) 
+##                              (0.046)   (0.069)   (0.059)    (0.060)   (0.068)    (0.097) 
 ##                                                                                          
 ## # Chronic Health Conditions  0.445*** 0.539***   0.459***  0.394***   0.374***  0.358*** 
-##                              (0.018)   (0.025)   (0.018)    (0.018)   (0.023)    (0.033) 
+##                              (0.018)   (0.031)   (0.022)    (0.020)   (0.021)    (0.031) 
 ##                                                                                          
 ## Age                          0.013*** 0.019***   0.016***  0.015***   0.018***    0.006  
-##                              (0.004)   (0.006)   (0.004)    (0.004)   (0.005)    (0.007) 
+##                              (0.004)   (0.005)   (0.005)    (0.004)   (0.005)    (0.007) 
 ##                                                                                          
-## Female                       -0.077*   -0.013     -0.016    -0.088    -0.122**   -0.158* 
-##                              (0.046)   (0.076)   (0.053)    (0.054)   (0.061)    (0.089) 
+## Female                       -0.077*   -0.013     -0.016    -0.088*   -0.122**   -0.158  
+##                              (0.046)   (0.074)   (0.052)    (0.051)   (0.055)    (0.101) 
 ##                                                                                          
-## White                        0.318**    0.073    0.338***  0.536***    0.193      0.305  
-##                              (0.141)   (0.195)   (0.097)    (0.193)   (0.257)    (0.243) 
+## White                        0.318**    0.073    0.338***   0.536**    0.193      0.305  
+##                              (0.141)   (0.186)   (0.119)    (0.224)   (0.203)    (0.255) 
 ##                                                                                          
 ## -----------------------------------------------------------------------------------------
 ## Observations                  2,955     2,955     2,955      2,955     2,955      2,955  
@@ -409,7 +410,7 @@ The rest of the lines arguments tidy up the table a little.
 <div id="coefficient-plots" class="section level2">
 <h2>Coefficient Plots</h2>
 <p>We now want to produce a coefficient plot.
-The plot should have one subplot for each variable of interest (we’ll do all), and each subplot has the point estimate and confidence interval of the regression coefficient for each quantile that we were interested in.
+The plot should have a subplot for each variable of interest (we’ll do all), and each subplot has the point estimate and confidence interval of the regression coefficient for each quantile that we were interested in.
 We’ll also connect the point estimates with a line.</p>
 <p>First, we will need the coefficients and confidence intervals in a format that’s easier to work with than the list format.
 To do this we will <code>tidy</code> the regression output.
@@ -418,15 +419,15 @@ For one set of estimates we would do this as follows:</p>
 ## # A tibble: 6 x 8
 ##   term        estimate std.error statistic     p.value conf.low conf.high   tau
 ##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
-## 1 (Intercept)   5.61     0.392       14.3  0            4.84      6.38      0.5
-## 2 suppins       0.277    0.0543       5.11 0.000000351  0.171     0.383     0.5
-## 3 totchr        0.394    0.0199      19.8  0            0.355     0.433     0.5
-## 4 age           0.0149   0.00413      3.60 0.000324     0.00677   0.0230    0.5
-## 5 female       -0.0881   0.0481      -1.83 0.0672      -0.182     0.00625   0.5
-## 6 white         0.536    0.250        2.14 0.0322       0.0457    1.03      0.5</code></pre>
+## 1 (Intercept)   5.61     0.383       14.6  0            4.86       6.36     0.5
+## 2 suppins       0.277    0.0528       5.24 0.000000169  0.173      0.381    0.5
+## 3 totchr        0.394    0.0192      20.5  0            0.357      0.432    0.5
+## 4 age           0.0149   0.00410      3.63 0.000292     0.00683    0.0229   0.5
+## 5 female       -0.0881   0.0516      -1.71 0.0877      -0.189      0.0130   0.5
+## 6 white         0.536    0.208        2.58 0.00998      0.128      0.945    0.5</code></pre>
 <p>And we see that it produces a data frame woth the coefficient names along with the estimates and the quantile (<code>tau</code>).
 To do this for each of the five elements of the list, we will use <code>map()</code> to apply the <code>tidy()</code> function to each element of the list <code>qr_res</code>.
-<code>.x</code> tells <code>R</code> where to use the first argument of map function, which for us is the first argument of the <code>tidy()</code> command.
+<code>.x</code> tells <code>R</code> where to use the first argument of map function (i.e. <code>qr_res</code> here), which for us is the first argument of the <code>tidy()</code> command.
 This produces a list of dataframes, each formatted like the one above.
 To <em>unlist</em> these into one larger dataframe, use <code>bind_rows()</code> to flatten the list of dataframes.</p>
 <pre class="r"><code>qr_tidy &lt;- map(qr_res, ~tidy(.x, se = &quot;boot&quot;)) %&gt;%
@@ -434,18 +435,18 @@ To <em>unlist</em> these into one larger dataframe, use <code>bind_rows()</code>
 <p>The result looks like:</p>
 <pre class="r"><code>head(qr_tidy, 10) # print first 10 rows
 ## # A tibble: 10 x 8
-##    term        estimate std.error statistic  p.value conf.low conf.high   tau
-##    &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
-##  1 (Intercept)   3.87     0.388       9.97  0.        3.11       4.63    0.1 
-##  2 suppins       0.396    0.0758      5.22  1.91e- 7  0.247      0.544   0.1 
-##  3 totchr        0.539    0.0272     19.8   0.        0.486      0.592   0.1 
-##  4 age           0.0193   0.00493     3.91  9.38e- 5  0.00961    0.0289  0.1 
-##  5 female       -0.0127   0.0782     -0.163 8.71e- 1 -0.166      0.141   0.1 
-##  6 white         0.0734   0.172       0.428 6.69e- 1 -0.263      0.410   0.1 
-##  7 (Intercept)   4.75     0.370      12.8   0.        4.02       5.47    0.25
-##  8 suppins       0.386    0.0610      6.33  2.85e-10  0.266      0.505   0.25
-##  9 totchr        0.459    0.0232     19.8   0.        0.414      0.505   0.25
-## 10 age           0.0155   0.00467     3.32  9.04e- 4  0.00636    0.0247  0.25</code></pre>
+##    term       estimate std.error statistic      p.value conf.low conf.high   tau
+##    &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
+##  1 (Intercep…   3.87     0.381      10.2        0.       3.12       4.61    0.1 
+##  2 suppins      0.396    0.0751      5.27       1.49e-7  0.248      0.543   0.1 
+##  3 totchr       0.539    0.0259     20.8        0.       0.488      0.590   0.1 
+##  4 age          0.0193   0.00487     3.96       7.77e-5  0.00972    0.0288  0.1 
+##  5 female      -0.0127   0.0807     -0.158      8.75e-1 -0.171      0.145   0.1 
+##  6 white        0.0734   0.180       0.407      6.84e-1 -0.280      0.427   0.1 
+##  7 (Intercep…   4.75     0.367      12.9        0.       4.03       5.47    0.25
+##  8 suppins      0.386    0.0636      6.07       1.44e-9  0.261      0.510   0.25
+##  9 totchr       0.459    0.0250     18.4        0.       0.410      0.508   0.25
+## 10 age          0.0155   0.00467     3.32       9.17e-4  0.00634    0.0247  0.25</code></pre>
 <p>We also tidy up the OLS estimation results so they have the same format.
 This is because we want to plot the OLS estimate too.
 Since there is only one set of estimates, we don’t need to worry about binding multiple sets of estimates together.</p>
