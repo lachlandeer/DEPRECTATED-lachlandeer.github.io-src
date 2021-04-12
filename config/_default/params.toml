@@ -104,10 +104,10 @@ directions = "Koopmans Building, Level 7, Room 711"
 
 # Office hours
 # A list of your office hours. To remove, set to an empty list `[]`.
-office_hours = ["By email appointment"]
+office_hours = ["Students: Thursday, 10am - 12.30pm"]
 
 # Enter an optional link for booking appointments (e.g. calendly.com).
-appointment_url = "https://calendly.com/lachlan-deer"
+appointment_url = "https://calendly.com/lachlan-deer/office-hours"
 
 # Contact links
 #   Set to `[]` to disable, or comment out unwanted lines with a hash `#`.
