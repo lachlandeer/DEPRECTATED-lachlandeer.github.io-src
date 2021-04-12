@@ -26,7 +26,7 @@ tags:
 title: Online Word of Mouth and the Performance of New Products
 url_code: ""
 url_dataset: ""
-url_pdf: "http://lachlandeer.github.io/files/deer_jmp.pdf"
+url_pdf: "./media/deer_jmp.pdf"
 url_poster: ""
 url_project: ""
 url_slides: ""
