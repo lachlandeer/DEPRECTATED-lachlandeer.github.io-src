@@ -6,12 +6,12 @@ title: Lachlan Deer
 superuser: true
 
 # Role/position/tagline
-role: Postdoctoral Fellow
+role: Assistant Professor
 
 # Organizations/Affiliations to show in About widget
 organizations:
-- name: Chicago Booth
-  url: https://www.chicagobooth.edu/
+- name: Tilburg University
+  url: https://www.tilburguniversity.edu/about/schools/economics-and-management/organization/departments/marketing
 
 # Short bio (displayed in user profile at end of posts)
 bio: My research interests include quantitative marketing, digital marketing and text as data.
@@ -78,7 +78,7 @@ email: ""
 # - Principal Investigators
 ---
 
-I am a Postdoctoral Fellow in the Marketing Group at University of Chicago Booth School of Business.
+I am an Assistant Professor in the Marketing Group at Tilburg University.
 
 My current research combines structural econometrics with text as data, utilizing tools from Machine Learning and Natural Language Processing, to study:
 
@@ -90,6 +90,7 @@ My current research combines structural econometrics with text as data, utilizin
 {{< icon name="download" pack="fas" >}} Download my {{< staticref "media/demo_resume.pdf" "newtab" >}}resumé{{< /staticref >}}.
 --->
 
-**<span style="color: #800000ff;"> News: I will join the Marketing Department at Tilburg University as an Assistant Professor in January 2021. </span>**
-
+<!---
+**<span style="color: #800000ff;"> News: Nothing to report </span>**
+--->
 
