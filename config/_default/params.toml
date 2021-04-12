@@ -107,7 +107,7 @@ directions = "Koopmans Building, Level 7, Room 711"
 office_hours = ["By email appointment"]
 
 # Enter an optional link for booking appointments (e.g. calendly.com).
-appointment_url = ""
+appointment_url = "https://calendly.com/lachlan-deer"
 
 # Contact links
 #   Set to `[]` to disable, or comment out unwanted lines with a hash `#`.
