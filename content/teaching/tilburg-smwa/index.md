@@ -4,15 +4,21 @@ external_link: ""
 image:
   focal_point: Smart
 links:
+- name: Course Material
+  url: https://tisem-digital-marketing.github.io/2021-smwa/
 - icon: github
   icon_pack: fab
   name: GitHub Page
-  url: https://github.com/tisem-social-media/
+  url: https://github.com/tisem-digital-marketing/
+- icon: youtube
+  icon_pack: fab
+  name: Video Lectures
+  url: https://www.youtube.com/channel/UCGodbWiarwz8BfXKy8Gxqlw
 slides:
 summary: Develops an understanding of the social media landscape from the point of view of a marketing analyst. Targeted at Master's students.
 tags:
 - Social Media
-title: Research In Social Media
+title: Social Media and Web Analytics
 url_code: ""
 url_pdf: ""
 url_slides: ""
