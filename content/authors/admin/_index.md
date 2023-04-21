@@ -80,17 +80,20 @@ email: ""
 
 I am an Assistant Professor in the Marketing Group at Tilburg University.
 
-My current research combines structural econometrics with text as data, utilizing tools from Machine Learning and Natural Language Processing, to study:
+My research develops quantitative models that guide managerial decision-making and inform public policy in the following areas:
 
-- The impact of social media content on consumer demand for new products
-- The interaction between offline advertising and online word of mouth
-- How the structure of online networks influence the spread of information and decision making
+- Social media's impact on consumer demand
+- Regulation of TV advertising
+- Effectiveness of mental health awareness campaigns
+- Social networks and their impact on protests
+
+Learn more about my research [here](./#research).
 
 <!---
 {{< icon name="download" pack="fas" >}} Download my {{< staticref "media/demo_resume.pdf" "newtab" >}}resumé{{< /staticref >}}.
 --->
 
 <!---
-**<span style="color: #800000ff;"> News: Nothing to report </span>**
+**<span style="color: #003366;"> Check out my latest working paper,  </span>**
 --->
 
