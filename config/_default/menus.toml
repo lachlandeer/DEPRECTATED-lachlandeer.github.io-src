@@ -19,6 +19,12 @@
   weight = 30
 
 [[main]]
+  name = "Tilburg Science Hub"
+  url = "#tsh"
+  weight = 35
+
+
+[[main]]
   name = "Blog"
   url = "#posts"
   weight = 40
