@@ -17,7 +17,7 @@ image:
   focal_point: ""
   preview_only: false
 projects: []
-publication: '*Journal of Risk and Uncertainty*, forthcoming'
+publication: '*Journal of Risk and Uncertainty*'
 publication_short: ""
 publication_types:
 - "2"
