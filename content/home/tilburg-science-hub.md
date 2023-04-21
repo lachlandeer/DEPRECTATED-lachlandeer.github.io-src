@@ -50,7 +50,7 @@ subtitle = ""
  css_class = ""
 +++
 
-**What we do**
+## What we do
 
 We help individual researchers, data scientists and their teams to efficiently work on empirical research projects. Our platform provides information about workflow and data management and tutorials that teach researchers how to organize and document their data and code. That way, our research becomes sustainable and reproducible, leading to time savings and transparency.
 
