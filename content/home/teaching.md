@@ -25,9 +25,13 @@ subtitle = ""
   filter_default = 0
   
   [[content.filter_button]]
-    name = "Social Media Analytics"
-    tag = "Social Media"
-  
+    name = "Digital Marketing"
+    tag = "Digital Marketing"
+    
+  [[content.filter_button]]
+    name = "Short Courses"
+    tag = "short-course"
+    
   [[content.filter_button]]
     name = "Programming Practices"
     tag = "pp4rs"
