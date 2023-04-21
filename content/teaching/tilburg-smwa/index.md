@@ -1,11 +1,13 @@
 ---
-date: "2021-03-01T00:00:00Z"
+date: "2023-03-01T00:00:00Z"
 external_link: ""
 image:
   focal_point: Smart
 links:
-- name: Course Material
-  url: https://tisem-digital-marketing.github.io/2021-smwa/
+- icon: home
+  icon_pack: fas
+  name: Recent Course Material
+  url: https://tisem-digital-marketing.github.io/2023-smwa/
 - icon: github
   icon_pack: fab
   name: GitHub Page
@@ -14,10 +16,14 @@ links:
   icon_pack: fab
   name: Video Lectures
   url: https://www.youtube.com/channel/UCGodbWiarwz8BfXKy8Gxqlw
+- icon: folder-open
+  icon_pack: fas
+  name: Archived Course Material
+  url: https://zenodo.org/record/6624035
 slides:
 summary: Develops an understanding of the social media landscape from the point of view of a marketing analyst. Targeted at Master's students.
 tags:
-- Social Media
+- Digital Marketing
 title: Social Media and Web Analytics
 url_code: ""
 url_pdf: ""
@@ -27,13 +33,13 @@ url_video: ""
 
 ## Taught at:
 
-- Tilburg, Spring 2021
+- [Tilburg, Spring 2021](https://tisem-digital-marketing.github.io/2021-smwa/)
+- [Tilburg, Spring 2022](https://tisem-digital-marketing.github.io/2022-smwa/)
+- [Tilburg, Spring 2023](https://tisem-digital-marketing.github.io/2023-smwa/)
 
 ## Motivation
 
-"Some 73% of online adults now use a social networking site of some kind... [and] 42% of online adults now use multiple social networking sites," according to a recent Pew Research survey.^[
-Pew Research, 2019, [Social Media Fact Sheet.](https://www.pewresearch.org/internet/fact-sheet/social-media/)
-]
+"Some 73% of online adults now use a social networking site of some kind... [and] 42% of online adults now use multiple social networking sites," according to a recent [Pew Research survey](https://www.pewresearch.org/internet/fact-sheet/social-media/).
 If a business needs to be where its customers are, then establishing a strong presence on social media is a critical component of a modern marketing strategy.
 The goal of this course is to develop an understanding of the social media landscape from the point of view of a marketing analyst.
 To that end, we need to be able to answer the following questions:
