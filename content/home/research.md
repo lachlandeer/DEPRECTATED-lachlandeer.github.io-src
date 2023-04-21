@@ -22,12 +22,12 @@ subtitle = ""
   filter_default = 0
   
   [[content.filter_button]]
+    name = "Working Papers"
+    tag = "Working Paper"  
+
+  [[content.filter_button]]
     name = "Publications"
     tag = "Publication"
-  
-  [[content.filter_button]]
-    name = "Working Papers"
-    tag = "Working Paper"
   
   [[content.filter_button]]
     name = "In Progress"
